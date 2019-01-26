@@ -11,7 +11,9 @@ import UIKit
 class ViewController: UIViewController {
     
     //Place your instance variables here
-    
+    let allQuestions = QuestionBank()
+    var pickedAnswer: Bool = false
+    var questionNumber: Int = 0
     
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -20,12 +22,18 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        // Display the first Question
+        startOver()
     }
 
 
     @IBAction func answerPressed(_ sender: AnyObject) {
-  
+        if sender.tag == 1  {
+            pickedAnswer = true
+        } else if sender.tag ==  2 {
+            pickedAnswer = false
+        }
+        checkAnswer()
     }
     
     
@@ -35,19 +43,34 @@ class ViewController: UIViewController {
     
 
     func nextQuestion() {
-        
+        if questionNumber < allQuestions.list.count - 1 {
+            questionNumber += 1
+            questionLabel.text = allQuestions.list[questionNumber].questionText
+        } else {
+            let alert = UIAlertController(title: "Good!", message: "You Have completed the quiz. Start Over ?", preferredStyle: .alert)
+            let restartAction = UIAlertAction (title: "Restart", style: .default) { (UIAlertAction) in
+                self.startOver()
+            }
+            alert.addAction(restartAction)
+            present(alert, animated: true, completion: nil)
+        }
     }
     
     
     func checkAnswer() {
-        
+        let correctAnswer = allQuestions.list[questionNumber].answer
+        if correctAnswer == pickedAnswer {
+            print ("Correct Answer")
+        } else {
+            print("Incorrect Answer")
+        }
+        nextQuestion()
     }
     
     
     func startOver() {
-       
+        questionNumber = 0
+        questionLabel.text = allQuestions.list[0].questionText
     }
-    
-
     
 }
